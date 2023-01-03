@@ -1,0 +1,54 @@
+<!--
+    DESCRIPTION     :
+        This is a web page that plays HI-LOW number games using HTML, Javascript, and ASP.
+        Ask for user name and post form to "hiloMaxNum.asp"
+-->
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>A-04 : HI-LO (REVISITED) – DONE WITH ASP AND SERVER-SIDE LOGIC</title>
+    <script type="text/javascript">
+
+        // FUNCTION     : validateNameInputs()
+        // DESCRIPTION  : Function to verify that the user's name is correct form
+        // PARAMETERS   : none
+        // RETURNS      : none
+        function validateNameInputs() {
+            var nameLength;
+            var whichName = document.getElementById("inputName").value;
+
+            // Check Character Length
+            nameLength = (whichName.trim()).length;
+            if (nameLength == 0) {
+                // Error message / feedback
+                document.getElementById("error").innerHTML = "Your name <b>cannot</b> be BLANK.";
+            }
+            else {
+                // Setup the regex for alpha characters and spaces
+                var lettersNSpaces = /^[A-Za-z\s]+$/;
+                if (whichName.match(lettersNSpaces)) {
+                    document.nameForm.submit();
+                }
+                else {
+                    document.getElementById("error").innerHTML = "Your name must be made of <b>alpha</b> characters <u>only</u>.";
+                }
+            }
+        }
+    
+    </script>
+</head>
+<body>
+    <!--
+            Table to receive the user's name
+            Validation of the entered value to save the user's name
+     -->
+    <form action="hiloMaxNum.asp" method="post" name="nameForm">
+        Please enter your name
+        <input name="userName" id="inputName" type="text" placeholder="Joe" size="20" autofocus/>
+        <input type="button" value="Submit" onclick="validateNameInputs();" />        
+    </form>
+    <div id="error" style="color:red;"></div>
+    
+</body>
+</html>

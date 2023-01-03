@@ -1,0 +1,28 @@
+﻿body {
+    text-align:center;
+    margin-top:10%;
+}
+
+.title{
+    font-size:35px;
+    font-family:fantasy;
+}
+
+.prompt{
+    font-size:25px;
+    font-variant:small-caps;
+}
+
+.Button{
+    background:#f90;
+    color: #fff;
+    font-family:Calibri;
+    padding:6px 30px;
+    border-bottom:3px solid #925b08;
+    border:none;
+    border-radius:5px;
+}
+
+.error{
+    color:red;
+}

@@ -1,0 +1,202 @@
+<!--
+    DESCRIPTION     :
+        This is a web page that plays HI-LOW number games using HTML and Javascript.
+        Ask for user name and get the maximum number you need to create the game.
+        Subsequently, the user must match the randomly selected number.
+-->
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>A-01 : HI-LO IN JAVASCRIPT AND HTML</title>
+    <script type="text/javascript">
+
+        // Global variables
+        var maxNumber;
+        var minNumber;
+        var correctNumber;
+
+        // FUNCTION     : validateNameInputs()
+        // DESCRIPTION  : Function to verify that the user's name is correct form
+        // PARAMETERS   : none
+        // RETURNS      : none
+        function validateNameInputs() {
+            var nameLength;
+            var nameValid = false;
+            var whichName = document.getElementById("userName").value;
+
+            // Check Character Length
+            nameLength = (whichName.trim()).length;
+            if (nameLength == 0) {
+                // Error message / feedback
+                document.getElementById("nameError").innerHTML = "Your name <b>cannot</b> be BLANK.";
+            }
+            else {
+                // Setup the regex for alpha characters and spaces
+                var lettersNSpaces = /^[A-Za-z\s]+$/;
+                if (whichName.match(lettersNSpaces)) {
+                    nameValid = true;
+                }
+                else {
+                    document.getElementById("nameError").innerHTML = "Your name must be made of <b>alpha</b> characters <u>only</u>.";
+                }
+            }
+
+            if (((nameValid == true) && (nameLength > 0))) {
+                document.getElementById("tableWrapperName").style.display = "none";	            // Hide the table
+                document.getElementById("tableWrapperMaxNum").style.display = "";               // Show the next table
+                document.getElementById("user").innerHTML = `Hello <b>${whichName}</b>!!`;      // Add User Name
+            }
+            else {
+                document.getElementById("overallFeedback").innerHTML = "Something is still wrong here ...";
+            }
+        }
+
+        // FUNCTION     : setUpMaxNum()
+        // DESCRIPTION  : Set the target value arbitrarily set at the maximum range set by the user
+        // PARAMETERS   : none
+        // RETURNS      : none
+        function setUpMaxNum() {
+            var whichNumber = document.getElementById("maxNum").value;
+            var isInteger = whichNumber % 1;
+
+            // Check the minimum possible values and negative numbers
+            if (whichNumber <= 1) {
+                document.getElementById("numError").innerHTML = "Number must be <b>greater than 1</b> or <b>non-negative</b>";
+            }
+            // Check if the number entered is a decimal
+            else if (isInteger != 0) {
+                document.getElementById("numError").innerHTML = "<b>Decimal points</b> are not allowed";
+            }
+            else {
+                minNumber = 1;                                                          // Set minimum value
+                maxNumber = whichNumber;                                                // Set maximum value
+                correctNumber = Math.floor((Math.random() * whichNumber) + 1);          // Set target value
+                document.getElementById("tableWrapperMaxNum").style.display = "none";	// Hide the table
+                document.getElementById("tableWrapperGuessing").style.display = "";     // Show the next table
+            }
+        }
+
+        // FUNCTION     : guessNumber()
+        // DESCRIPTION  : A function that checks that the number you guess is the same as the randomly set target
+        // PARAMETERS   : none
+        // RETURNS      : none
+        function guessNumber() {
+            var userGuessNumber = document.getElementById("guessingNum").value;
+            var targetNumber = correctNumber;
+            var guessNumToInterger = parseInt(userGuessNumber);     // Fixing a phenomenon in which a user's value is sometimes not passed to an integer data type
+            var isInterger = guessNumToInterger % 1;
+
+            // Check if the number entered is a decimal
+            if (isInterger != 0) {
+                document.getElementById("guessError").innerHTML = "<b>Decimal points</b> are not allowed";
+            }
+            // Determine if the user's value is less than minimum or greater than maximum
+            else if (guessNumToInterger < minNumber || guessNumToInterger > maxNumber) {
+                document.getElementById("guessError").innerHTML = "You cannot enter <b>less than minimum</b> or <b>greater than maximum</b>";
+            }
+            else {
+                // If the estimated value is greater than the target value,
+                if (targetNumber > guessNumToInterger) {
+                    minNumber = guessNumToInterger;
+                    document.getElementById("guessError").innerHTML = "Target number is <b>HI</b>";
+                    document.getElementById("guessRange").innerHTML = `Range: ${minNumber} - ${maxNumber}`;
+                }
+                // If the estimated value is less than the target value,
+                else if (targetNumber < guessNumToInterger) {
+                    maxNumber = guessNumToInterger;
+                    document.getElementById("guessError").innerHTML = "Target number is <b>LOW</b>";
+                    document.getElementById("guessRange").innerHTML = `Range: ${minNumber} - ${maxNumber}`;
+                }
+                else {
+                    document.getElementById("tableWrapperGuessing").style.display = "none";	    // Hide the table
+                    document.getElementById("winWrapper").style.display = "";                   // Show the next table
+                    document.body.style.backgroundColor = "yellow";                             // Change background color
+                }
+            }
+        }
+
+        // FUNCTION     : playAgain()
+        // DESCRIPTION  : Function to restart the game
+        // PARAMETERS   : none
+        // RETURNS      : none
+        function playAgain() {
+            document.getElementById("winWrapper").style.display = "none";           // Hide the table
+            document.getElementById("tableWrapperMaxNum").style.display = "";       // Show the maximum number input table
+
+            // Initialize previous user values
+            document.getElementById("maxNum").value = "";
+            document.getElementById("guessingNum").value = "";
+
+            // Initialize previous user error
+            document.getElementById("nameError").innerHTML = "";
+            document.getElementById("numError").innerHTML = "";
+            document.getElementById("guessError").innerHTML = "";
+            document.getElementById("guessRange").innerHTML = "";
+
+            // Initialize previous background
+            document.body.style.backgroundColor = "";
+        }
+    </script>
+</head>
+<body>
+    <!--
+            Table to receive the user's name
+            Validation of the entered value to save the user's name
+     -->
+    <div id="tableWrapperName">
+        <table id="inputUserName">
+            <tr>
+                <td>Please enter your name</td>
+                <td><input name="namePrompt" id="userName" type="text" /></td>
+                <td><input id="nameCheckInput" type="button" value="Submit" onclick="validateNameInputs();" /></td>
+                <td><div id="nameError" style="color:red;"></div></td>
+            </tr>
+        </table>
+    </div>
+
+    <!--
+           Table to receive user's game maximums
+           Validate the input to set the value that the user should guess
+     -->
+    <div id="tableWrapperMaxNum" style="display:none">
+        <table id="inputMaxNum">
+            <tr>
+                <td id="user"></td>
+                <td>Please enter the maximum Number for the game</td>
+                <td><input name="maxNumPrompt" id="maxNum" type="number" /></td>
+                <td><input id="maxNumCheckInput" type="button" value="Submit" onclick="setUpMaxNum()" /></td>
+                <td><div id="numError" style="color:red;"></div></td>
+            </tr>
+        </table>
+    </div>
+
+    <!--
+           The table that plays the user's game
+           Verify that the user's value is correct by verifying the value entered
+     -->
+    <div id="tableWrapperGuessing" style="display:none">
+        <table id="inputGuessing">
+            <tr>
+                <td style="font-size:8px;">Your allowable guessing range is any value</td>
+            </tr>
+            <tr>
+                <td>Please guess a number</td>
+                <td><input name="guessingNumPrompt" id="guessingNum" type="number" /></td>
+                <td><input id="guessingCheckInput" type="button" value="Make this guess" onclick="guessNumber()" /></td>
+                <td><div id="guessError" style="color:red;"></div></td>
+                <td><div id="guessRange" style="color:red;"></div></td>
+            </tr>
+        </table>
+    </div>
+
+    <!--
+            Print out a message saying user won the game
+            A table asking if you want to play the game again
+     -->
+    <div id="winWrapper" style="display:none;">
+        <div id="youWin" style="position:absolute; top: 40%; left:50%; transform:translateX(-50%);font-size:50px;"><b>YOU WIN</b></div>
+        <input id="b_playAgain" type="button" value="PLAY AGAIN" style="position:absolute; top: 50%; left:50%; transform:translateX(-50%); font-size: 20px; text-align:center;" onclick="playAgain()" />
+    </div>
+</body>
+</html>
